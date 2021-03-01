@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ParseRss</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_hit_rss">Введите адрес rss</string>
+    <string name="button_open_news">Открыть новости</string>
+    <string name="toast_empty_input">Введите адрес</string>
+</resources>

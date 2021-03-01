@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_hit_rss">Введите адрес rss</string>
+    <string name="button_open_news">Открыть новости</string>
+</resources>
