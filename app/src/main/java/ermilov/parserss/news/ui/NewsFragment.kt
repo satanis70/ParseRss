@@ -1,5 +1,6 @@
 package ermilov.parserss.news.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,18 +14,19 @@ import ermilov.parserss.news.data.Holder
 import ermilov.parserss.R
 import ermilov.parserss.news.model.RssApi
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.toptas.rssconverter.RssConverterFactory
 import me.toptas.rssconverter.RssFeed
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 
 
 class NewsFragment : Fragment() {
     lateinit var navController: NavController
     var listTitle = ArrayList<String>()
     var listImage = ArrayList<String>()
+    var adress = String()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,37 +37,38 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        adress = sharedPref.getString("adress", "").toString()
         getnews()
-        listTitle.add("sdagfs faasgfg  ")
-        val adapter = Holder(listTitle, listImage)
-        recycler_news.layoutManager = LinearLayoutManager(requireContext())
-        recycler_news.adapter = adapter
-
     }
 
     fun getnews(){
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://lenta.ru/")
+                .baseUrl("https://")
             .addConverterFactory(RssConverterFactory.create())
             .build()
-
-
         val rssApi = retrofit.create(RssApi::class.java)
-        rssApi.getNews("rss/news").enqueue(object : Callback<RssFeed> {
-            override fun onResponse(call: Call<RssFeed>, response: Response<RssFeed>) {
-                for (i in response.body()?.items!!){
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val responce = rssApi.getNews(adress)
+            if (responce.isSuccessful){
+                for (i in responce.body()?.items!!){
                     listTitle.add(i.title.toString())
                     listImage.add(i.image.toString())
                     Log.i("tagError", i.title.toString())
                 }
-
+                launch(Dispatchers.Main){
+                    val adapter = Holder(listTitle, listImage)
+                    recycler_news.layoutManager = LinearLayoutManager(requireContext())
+                    recycler_news.adapter = adapter
+                }
             }
-            override fun onFailure(call: Call<RssFeed>, t: Throwable) {
-                Log.i("tagError", t.message.toString())
-            }
 
-        })
+        }
+
+
+
 
     }
 }

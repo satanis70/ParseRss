@@ -32,7 +32,11 @@ class Holder(var listTitle: List<String>, var listImage: List<String>) : Recycle
 
         fun bind(title: String, image: String){
             titleTextView.text = title
-            //Glide.with(itemView.context).load(image).into(imageNews)
+            Glide.with(itemView.context)
+                    .load(image)
+                    .override(300, 300)
+                    .centerCrop()
+                    .into(imageNews)
         }
 
     }
