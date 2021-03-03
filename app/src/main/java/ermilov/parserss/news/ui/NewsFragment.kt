@@ -6,9 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import ermilov.parserss.InputAdress.data.Holder
+import ermilov.parserss.news.data.Holder
 import ermilov.parserss.R
 import ermilov.parserss.news.model.RssApi
 import kotlinx.android.synthetic.main.fragment_news.*
@@ -21,7 +22,7 @@ import retrofit2.Retrofit
 
 
 class NewsFragment : Fragment() {
-
+    lateinit var navController: NavController
     var listTitle = ArrayList<String>()
     var listImage = ArrayList<String>()
     override fun onCreateView(
@@ -33,7 +34,12 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
         getnews()
+        listTitle.add("sdagfs faasgfg  ")
+        val adapter = Holder(listTitle, listImage)
+        recycler_news.layoutManager = LinearLayoutManager(requireContext())
+        recycler_news.adapter = adapter
 
     }
 
@@ -51,16 +57,15 @@ class NewsFragment : Fragment() {
                 for (i in response.body()?.items!!){
                     listTitle.add(i.title.toString())
                     listImage.add(i.image.toString())
+                    Log.i("tagError", i.title.toString())
                 }
-                val adapter = Holder(listTitle, listImage)
-                recycler_news.layoutManager = LinearLayoutManager(activity)
-                recycler_news.adapter = adapter
-            }
 
+            }
             override fun onFailure(call: Call<RssFeed>, t: Throwable) {
                 Log.i("tagError", t.message.toString())
             }
 
         })
+
     }
 }
