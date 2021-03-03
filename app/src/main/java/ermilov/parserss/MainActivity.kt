@@ -17,25 +17,5 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://lenta.ru/")
-                .addConverterFactory(RssConverterFactory.create())
-                .build()
-
-
-
-        val rssApi = retrofit.create(RssApi::class.java)
-        rssApi.getNews("rss/news").enqueue(object : Callback<RssFeed> {
-            override fun onResponse(call: Call<RssFeed>, response: Response<RssFeed>) {
-                for (i in response.body()?.items!!){
-                    Log.i("tag", i.toString())
-                }
-            }
-
-            override fun onFailure(call: Call<RssFeed>, t: Throwable) {
-                Log.i("tagError", t.message.toString())
-            }
-
-        })
     }
 }
